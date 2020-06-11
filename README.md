@@ -1,2 +1,2 @@
-# Fogo
-Fogo Social Media
+# Fgo
+Fgo Social
