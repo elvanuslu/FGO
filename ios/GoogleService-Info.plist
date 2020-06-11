@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>599660645349-oag9cvlcbgdmepjm1ifirjfu7m2ci72d.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.599660645349-oag9cvlcbgdmepjm1ifirjfu7m2ci72d</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBaHPwF-8uvzx3irG4a9hNlrVwmiPNTLn0</string>
+	<key>GCM_SENDER_ID</key>
+	<string>599660645349</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.Kuanto.Fogo</string>
+	<key>PROJECT_ID</key>
+	<string>fogo-3892d</string>
+	<key>STORAGE_BUCKET</key>
+	<string>fogo-3892d.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:599660645349:ios:7115fcf8991afe390ebd0c</string>
+	<key>DATABASE_URL</key>
+	<string>https://fogo-3892d.firebaseio.com</string>
+</dict>
+</plist>

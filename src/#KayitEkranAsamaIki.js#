@@ -1,0 +1,800 @@
+/* eslint-disable no-alert */
+/* eslint-disable react/no-did-mount-set-state */
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-unused-vars */
+import React, {Component, useState, useEffect} from 'react';
+
+import {
+  SafeAreaView,
+  View,
+  StatusBar,
+  Image,
+  ImageBackground,
+  Dimensions,
+  Platform,
+  TouchableOpacity,
+  ScrollView,
+  PermissionsAndroid,
+  Toast,
+  Alert,
+} from 'react-native';
+
+import {
+  Container,
+  Header,
+  Title,
+  Left,
+  Right,
+  Body,
+  Text,
+  Icon,
+  Button,
+  Input,
+  Item,
+  Content,
+} from 'native-base';
+
+import styles from '../styles/styles';
+import {header} from '../Component/header';
+import {button, buttonOnPress} from '../Component/button';
+import {logoveYazi} from '../Component/logoveYazi';
+import {connect} from 'react-redux';
+import {UserRegistration} from '../Component/hooks';
+import {spinner} from '../Component/spinner';
+
+import {getLocation} from '../Component/location';
+import Geolocation from 'react-native-geolocation-service';
+import {detectCityLocation, userRegister} from '../service/service';
+import DeviceInfo from 'react-native-device-info';
+import NetInfo, {
+  NetInfoState,
+  NetInfoSubscription,
+} from '@react-native-community/netinfo';
+import * as RNLocalize from 'react-native-localize';
+import * as kullaniciKayit from './actions/';
+
+const logo = require('../assets/logo.png');
+const screenBg = require('../assets/griarkaplan.png');
+const erkekbuton = require('../assets/CButon.png');
+const kucukButton = require('../assets/kucukButon.png');
+const done = require('../assets/done.png');
+const kirmiziButton = require('../assets/kbuton.png');
+
+const mapStateProps = state => {
+  return {
+    durum: state.durum,
+  };
+};
+const mapDispatchToProps = (dispatch, txt) => {
+  return {
+    degistir: () => dispatch({type: 'setDurum', payload: 'Ahmet'}),
+  };
+};
+
+let Cinsiyet = 'Erkek';
+let usMail = '';
+let data = {};
+class KayitEkranAsamaIki extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: false,
+      myTextContentType: true,
+      userMail: '',
+      Adi: '',
+      Sifre: '',
+      Konum: '',
+      Cinsiyet: 'm',
+      location: {},
+      updatesEnabled: false,
+      lat: 0,
+      lon: 0,
+      token: '',
+      Id: '',
+      userName: '',
+      role: '',
+      iat: '',
+      CountryCode: '',
+      error: [],
+      locale: '',
+      nameError: '',
+      passwordError: '',
+    };
+  }
+  componentDidMount = async () => {
+    usMail = this.props.navigation.state.params.userMail;
+    console.log('Email: ' + usMail);
+    this.getLocation();
+    this.ongetDeviceInfo();
+  };
+  saveUser = () => {
+    try {
+      let uniqueId = DeviceInfo.getUniqueId();
+      this.setState({loading: true});
+      userRegister(
+        this.props.navigation.state.params.userMail,
+        this.state.Adi,
+        this.state.Sifre,
+        this.state.Cinsiyet,
+        this.state.CountryCode,
+        uniqueId,
+        Platform.OS === 'ios' ? 'ios' : 'android',
+        this.state.locale, //locale
+        '', //Password Again
+        this.state.location.latitude,
+        this.state.location.longitude,
+      ).then(res => {
+        console.log('Registrar: ' + JSON.stringify(res));
+        this.setState({loading: false});
+        data = res;
+        if (res.status === true) {
+          kullaniciKayit.setFullName(this.state.Adi);
+          kullaniciKayit.setCIHAZID(uniqueId);
+          kullaniciKayit.setCountryCode(this.state.CountryCode);
+          kullaniciKayit.setMailId(this.props.navigation.state.params.userMail);
+          kullaniciKayit.setGenderId(this.state.Cinsiyet);
+          kullaniciKayit.setLatitude(this.state.location.latitude);
+          kullaniciKayit.setLongitude(this.state.location.longitude);
+          kullaniciKayit.setLocale(this.state.locale);
+          const os = Platform.OS === 'ios' ? 'ios' : 'android';
+          kullaniciKayit.setOS(os);
+          kullaniciKayit.setTokenId(res.data.token);
+          kullaniciKayit.setUsrName(
+            this.props.navigation.state.params.userMail,
+          );
+          kullaniciKayit.setUsrId(res.data.payload.id);
+          this.setState({token: res.data.token});
+          this.setState({loading: false}, () => {
+            Alert.alert(
+              'Kayıt işlemi!',
+              'Kayıt Başarılı',
+              [
+                {
+                  text: 'Tamam',
+                  onPress: () => {
+                    this.props.navigation.push('SearchMain');
+                  },
+                },
+              ],
+              {cancelable: true},
+            );
+          });
+        } else {
+          let hata = [];
+          hata.push(res.error_message);
+          if (hata[0].full_name[0].message !== '') {
+            this.setState({nameError: hata[0].full_name[0].message});
+          }
+          if (hata[0].password[0].message !== '') {
+            this.setState({passwordError: hata[0].password[0].message});
+            console.log('hata log: ' + hata[0].password[0].message);
+          }
+          // Hata Var
+          console.log('hata var: ' + JSON.stringify(res));
+          //#region
+          /*    Alert.alert(
+            'Kayıt Hatası!',
+            hata[0].full_name[0].message,
+            [
+              {
+                text: 'Tamam',
+                onPress: () => {
+                  this.setState({loading: false});
+                },
+              },
+            ],
+            {cancelable: true},
+          );
+          */
+          //#endregion
+        }
+      });
+    } catch (error) {
+      Alert.alert(
+        'Kayıt Hatası!',
+        error,
+        [
+          {
+            text: 'Tamam',
+            onPress: () => {
+              this.setState({loading: false});
+            },
+          },
+        ],
+        {cancelable: true},
+      );
+    }
+  };
+  ongetDeviceInfo = () => {
+    try {
+      DeviceInfo.getAndroidId().then(androidId => {
+        console.log('Android Id: ' + androidId);
+      });
+      let appName = DeviceInfo.getApplicationName();
+      console.log('App Name: ' + appName);
+      DeviceInfo.getBatteryLevel().then(batteryLevel => {
+        console.log('batteryLevel: ' + batteryLevel);
+      });
+      let brand = DeviceInfo.getBrand();
+      console.log('brand: ' + brand);
+      let buildNumber = DeviceInfo.getBuildNumber();
+      console.log('buildNumber: ' + buildNumber);
+      let bundleId = DeviceInfo.getBundleId();
+      console.log('bundleId: ' + bundleId);
+      DeviceInfo.getCarrier().then(carrier => {
+        console.log('carrier: ' + carrier);
+        DeviceInfo.getDevice().then(device => {
+          console.log('device: ' + device);
+          let deviceId = DeviceInfo.getDeviceId();
+          console.log('deviceId: ' + deviceId);
+          DeviceInfo.getDeviceName().then(deviceName => {
+            console.log('deviceName: ' + deviceName);
+          });
+        });
+      });
+      DeviceInfo.getHardware().then(hardware => {
+        console.log('getHardware: ' + hardware);
+      });
+      DeviceInfo.getIpAddress().then(ip => {
+        console.log('IP: ' + ip);
+      });
+      DeviceInfo.getInstallReferrer().then(installReferrer => {
+        console.log('installReferrer: ' + installReferrer);
+      });
+      DeviceInfo.getInstanceId().then(instanceId => {
+        console.log('instanceId: ' + instanceId);
+      });
+      DeviceInfo.getManufacturer().then(manufacturer => {
+        console.log('manufacturer: ' + manufacturer);
+      });
+      let model = DeviceInfo.getModel();
+      console.log('model: ' + model);
+      DeviceInfo.getPhoneNumber().then(phoneNumber => {
+        console.log('phoneNumber: ' + phoneNumber);
+        // Android: null return: no permission, empty string: unprogrammed or empty SIM1, e.g. "+15555215558": normal return value
+      });
+      DeviceInfo.getSerialNumber().then(serialNumber => {
+        // iOS: unknown
+        // Android: ? (maybe a serial number, if your app is privileged)
+        // Windows: unknown
+        console.log('serialNumber: ' + serialNumber);
+      });
+      let systemName = DeviceInfo.getSystemName();
+      console.log('systemName: ' + systemName);
+      let uniqueId = DeviceInfo.getUniqueId();
+      console.log('uniqueId: ' + uniqueId);
+      let version = DeviceInfo.getVersion();
+      console.log('version: ' + version);
+      DeviceInfo.getSystemAvailableFeatures().then(features => {
+        // ["android.software.backup", "android.hardware.screen.landscape", "android.hardware.wifi", ...]
+        console.log('features: ' + features);
+      });
+      DeviceInfo.isLocationEnabled().then(enabled => {
+        console.log('isLocationEnabled: ' + enabled);
+      });
+      DeviceInfo.getAvailableLocationProviders().then(providers => {
+        // {
+        //   gps: true
+        //   network: true
+        //   passive: true
+        // }
+        console.log(
+          'getAvailableLocationProviders: ' + JSON.stringify(providers),
+        );
+      });
+      /*
+    NetIbnfo STate: {
+    "details": {
+        "subnet": "255.255.255.255",
+        "ipAddress": "192.168.232.2",
+        "strength": 99,
+        "ssid": "AndroidWifi",
+        "isConnectionExpensive": false
+    },
+    "isInternetReachable": true,
+    "isConnected": true,
+    "type": "wifi"
+      */
+      NetInfo.fetch().then(state => {
+        console.log('NetIbnfo STate: ' + JSON.stringify(state, null, 4));
+        console.log('Connection type', state.type);
+        console.log('Is connected?', state.isConnected);
+      });
+      DeviceInfo.getHost().then(host => {
+        console.log('host?', host);
+      });
+      const lang = RNLocalize.getLocales();
+      RNLocalize.getLocales().map((data, i) => {
+        console.log('Locales Tag: ' + data.languageTag);
+        this.setState({locale: data.languageTag});
+      });
+      console.log('Currencies: ' + RNLocalize.getCurrencies());
+    } catch (error) {
+      Alert.alert(
+        'Device Info Error',
+        error,
+        [{text: 'Tamam', onPress: () => ''}],
+        {
+          cancelable: true,
+        },
+      );
+    }
+  };
+  getCity = () => {
+    try {
+      this.setState({loading: true});
+      detectCityLocation(
+        this.state.location.latitude,
+        this.state.location.longitude,
+      ).then(res => {
+        console.log('dtc: ' + JSON.stringify(res, null, 4));
+        this.setState({loading: false, Konum: res.data.name});
+        this.setState({CountryCode: res.data.id});
+      });
+    } catch (error) {
+      console.log('Error: ' + error);
+    }
+  };
+  hasLocationPermission = async () => {
+    if (
+      Platform.OS === 'ios' ||
+      (Platform.OS === 'android' && Platform.Version < 23)
+    ) {
+      return true;
+    }
+
+    const hasPermission = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+
+    if (hasPermission) {
+      return true;
+    }
+
+    const status = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+    );
+
+    if (status === PermissionsAndroid.RESULTS.GRANTED) {
+      return true;
+    }
+
+    if (status === PermissionsAndroid.RESULTS.DENIED) {
+      Toast.show('Location permission denied by user.', Toast.LONG);
+    } else if (status === PermissionsAndroid.RESULTS.NEVER_ASK_AGAIN) {
+      Toast.show('Location permission revoked by user.', Toast.LONG);
+    }
+
+    return false;
+  };
+  getLocation = async () => {
+    const hasLocationPermission = await this.hasLocationPermission();
+
+    if (!hasLocationPermission) {
+      return;
+    }
+
+    this.setState({loading: true}, () => {
+      Geolocation.getCurrentPosition(
+        position => {
+          this.setState({location: position.coords, loading: false});
+          /*  console.log(
+            'Position: ' + JSON.stringify(this.state.location, null, 4),
+          );
+          */
+          this.getCity();
+        },
+        error => {
+          this.setState({location: error, loading: false});
+          console.log(error);
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 10000,
+          distanceFilter: 50,
+          forceRequestLocation: true,
+        },
+      );
+    });
+  };
+  getLocationUpdates = async () => {
+    const hasLocationPermission = await this.hasLocationPermission();
+
+    if (!hasLocationPermission) {
+      return;
+    }
+
+    this.setState({updatesEnabled: true}, () => {
+      this.watchId = Geolocation.watchPosition(
+        position => {
+          this.setState({location: position});
+          console.log(position);
+        },
+        error => {
+          this.setState({location: error});
+          console.log(error);
+        },
+        {
+          enableHighAccuracy: true,
+          distanceFilter: 0,
+          interval: 5000,
+          fastestInterval: 2000,
+        },
+      );
+    });
+  };
+  removeLocationUpdates = () => {
+    if (this.watchId !== null) {
+      Geolocation.clearWatch(this.watchId);
+      this.setState({updatesEnabled: false});
+    }
+  };
+  onKadinbutton = button => {
+    if (button === 'kucukButton') {
+      return (
+        <TouchableOpacity
+          onPress={() => {
+            button = 'erkekButton';
+          }}>
+          <View>
+            <Image
+              source={kucukButton}
+              style={{
+                width: 80,
+                alignSelf: 'center',
+                resizeMode: 'contain',
+              }}
+            />
+            <Text
+              style={{
+                color: 'gray',
+                marginTop: -85,
+                fontSize: 14,
+                fontWeight: 'bold',
+                alignSelf: 'center',
+              }}>
+              {' '}
+              Kadın
+            </Text>
+          </View>
+        </TouchableOpacity>
+      );
+    } else {
+      return (
+        <TouchableOpacity onPress={() => this.onKadinbuttonClick('kadin')}>
+          <View>
+            <Image
+              source={kucukButton}
+              style={{
+                width: 80,
+                alignSelf: 'center',
+                resizeMode: 'contain',
+              }}
+            />
+            <Text
+              style={{
+                color: 'gray',
+                marginTop: -85,
+                fontSize: 14,
+                fontWeight: 'bold',
+                alignSelf: 'center',
+              }}>
+              {' '}
+              Kadın
+            </Text>
+          </View>
+        </TouchableOpacity>
+      );
+    }
+  };
+  CinsiyetSec = () => {
+    if (this.state.Cinsiyet === 'm') {
+      return (
+        <View style={{flexDirection: 'row'}}>
+          <View style={{marginTop: -50, marginLeft: 10}}>
+            <TouchableOpacity onPress={() => this.onCinsiyet('m')}>
+              <View>
+                <Image
+                  source={erkekbuton}
+                  style={{
+                    width: 80,
+                    alignSelf: 'center',
+                    resizeMode: 'contain',
+                  }}
+                />
+                <Text
+                  style={{
+                    color: 'gray',
+                    marginTop: -85,
+                    fontSize: 14,
+                    fontWeight: 'bold',
+                    alignSelf: 'center',
+                  }}>
+                  {' '}
+                  Erkek
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={{marginTop: -50, marginLeft: 10, marginRight: 40}}>
+            <TouchableOpacity onPress={() => this.onCinsiyet('f')}>
+              <View>
+                <Image
+                  source={kucukButton}
+                  style={{
+                    width: 80,
+                    alignSelf: 'center',
+                    resizeMode: 'contain',
+                    borderColor: 'yellow',
+                  }}
+                />
+                <Text
+                  style={{
+                    color: 'gray',
+                    marginTop: -85,
+                    fontSize: 14,
+                    fontWeight: 'bold',
+                    alignSelf: 'center',
+                  }}>
+                  {' '}
+                  Kadın
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    } else if (this.state.Cinsiyet === 'f') {
+      return (
+        <View style={{flexDirection: 'row'}}>
+          <View style={{marginTop: -50, marginLeft: 10}}>
+            <TouchableOpacity onPress={() => this.onCinsiyet('m')}>
+              <View>
+                <Image
+                  source={kucukButton}
+                  style={{
+                    width: 80,
+                    alignSelf: 'center',
+                    resizeMode: 'contain',
+                  }}
+                />
+                <Text
+                  style={{
+                    color: 'gray',
+                    marginTop: -85,
+                    fontSize: 14,
+                    fontWeight: 'bold',
+                    alignSelf: 'center',
+                  }}>
+                  {' '}
+                  Erkek
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={{marginTop: -50, marginLeft: 10, marginRight: 40}}>
+            <TouchableOpacity onPress={() => this.onCinsiyet('f')}>
+              <View>
+                <Image
+                  source={erkekbuton}
+                  style={{
+                    width: 80,
+                    alignSelf: 'center',
+                    resizeMode: 'contain',
+                    borderColor: 'yellow',
+                  }}
+                />
+                <Text
+                  style={{
+                    color: 'gray',
+                    marginTop: -85,
+                    fontSize: 14,
+                    fontWeight: 'bold',
+                    alignSelf: 'center',
+                  }}>
+                  {' '}
+                  Kadın
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    }
+  };
+  onCinsiyet = cinsiyet => {
+    if (cinsiyet === 'm') {
+      this.setState({Cinsiyet: 'm'});
+    } else if (cinsiyet === 'f') {
+      this.setState({Cinsiyet: 'f'});
+    }
+  };
+
+  render() {
+    return (
+      <Container style={{backgroundColor: 'transparent'}}>
+        <ImageBackground source={screenBg} style={styles.imageContainer}>
+          <Content>{header('', 'KayitEkranAsamaBir', this.props)}</Content>
+          <View>
+            {spinner(this.state.loading)}
+
+            <View>
+              <Item regular style={styles.Item}>
+                <Input
+                  style={{color: 'black', marginLeft: 10}}
+                  placeholder="Ad-soyad"
+                  //keyboardType="email-address"
+                  placeholderTextColor="#808080"
+                  onChangeText={value => this.setState({Adi: value})}
+                  value={this.state.Adi}
+                  underlineColorAndroid="transparent"
+                />
+                <TouchableOpacity
+                  onPress={() =>
+                    this.state.myTextContentType === true
+                      ? this.setState({myTextContentType: false})
+                      : this.setState({myTextContentType: true})
+                  }
+                />
+              </Item>
+              <Text
+                style={{
+                  fontSize: 10,
+                  color: 'red',
+                  marginLeft: 50,
+                  marginTop: 5,
+                }}>
+                {this.state.nameError}
+              </Text>
+            </View>
+            <View style={{marginTop: 10}}>
+              <Item regular style={styles.Item}>
+                <Input
+                  style={{color: 'black', marginLeft: 10}}
+                  placeholder="Şifre"
+                  //keyboardType="email-address"
+                  placeholderTextColor="#808080"
+                  onChangeText={value => this.setState({Sifre: value})}
+                  value={this.state.Sifre}
+                  underlineColorAndroid="transparent"
+                />
+                <TouchableOpacity
+                  onPress={() =>
+                    this.state.myTextContentType === true
+                      ? this.setState({myTextContentType: false})
+                      : this.setState({myTextContentType: true})
+                  }>
+                  <Image
+                    style={{width: 15, height: 15, marginRight: 20}}
+                    source={done}
+                  />
+                </TouchableOpacity>
+              </Item>
+              <Text
+                style={{
+                  fontSize: 10,
+                  color: 'red',
+                  marginLeft: 50,
+                  marginTop: 5,
+                }}>
+                {this.state.passwordError}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 10,
+                  color: 'gray',
+                  marginLeft: 50,
+                  marginTop: 5,
+                }}>
+                Your password must be 6-8 character.
+              </Text>
+            </View>
+            <View style={{marginTop: 10}}>
+              <Item regular style={styles.Item}>
+                <Input
+                  style={{color: 'black', marginLeft: 10}}
+                  placeholder="Bulunduğun yer"
+                  //keyboardType="email-address"
+                  placeholderTextColor="#808080"
+                  onChangeText={value => this.setState({Konum: value})}
+                  value={this.state.Konum}
+                  underlineColorAndroid="transparent"
+                />
+                <TouchableOpacity
+                  onPress={() =>
+                    this.state.myTextContentType === true
+                      ? this.setState({myTextContentType: false})
+                      : this.setState({myTextContentType: true})
+                  }
+                />
+              </Item>
+            </View>
+            <View
+              style={{
+                marginTop: 0,
+                flexDirection: 'row',
+                alignSelf: 'flex-end',
+              }}>
+              <View>
+                <Text
+                  style={{
+                    marginTop: 15,
+                    marginLeft: 40,
+                    color: 'gray',
+                    fontSize: 14,
+                    fontWeight: '600',
+                  }}>
+                  Cinsiyetin
+                </Text>
+              </View>
+              {this.CinsiyetSec()}
+            </View>
+            <View style={{marginTop: 0}}>
+              <TouchableOpacity onPress={() => this.saveUser()}>
+                <View>
+                  <Image
+                    source={kirmiziButton}
+                    style={{
+                      width: '90%',
+                      alignSelf: 'center',
+                      resizeMode: 'contain',
+                    }}
+                  />
+                  <Text
+                    style={{
+                      color: 'white',
+                      marginTop: -85,
+                      fontSize: 16,
+                      fontWeight: 'bold',
+                      alignSelf: 'center',
+                    }}>
+                    DONE
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: 'transparent',
+              alignContent: 'flex-start',
+            }}
+          />
+          <View
+            style={{
+              flex: 0.7,
+              backgroundColor: 'transparent',
+              alignContent: 'flex-start',
+            }}>
+            {logoveYazi(
+              'Already have an account? ',
+              '',
+              this.props,
+              logo,
+              'SIGN IN',
+            )}
+          </View>
+        </ImageBackground>
+      </Container>
+    );
+  }
+}
+const mapStateToProps = (state, ownProps) => ({
+  userName: state.userReducers.username,
+  userId: state.userReducers.userId,
+  emailId: state.userReducers.email,
+  tokenId: state.userReducers.token,
+  gender: state.userReducers.gender,
+  role: state.userReducers.role,
+  CountryCode: state.userReducers.CountryCode,
+  CihazUniqueId: state.userReducers.CihazUniqueId,
+  Os: state.userReducers.Os,
+  locale: state.userReducers.locale,
+  latitude: state.userReducers.latitude,
+  longitude: state.userReducers.longitude,
+  FullName: state.userReducers.FullName,
+});
+
+export default connect(mapStateToProps)(KayitEkranAsamaIki);

@@ -1,0 +1,162 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-unused-vars */
+import React, {Component} from 'react';
+
+import {
+  SafeAreaView,
+  View,
+  StatusBar,
+  Image,
+  ImageBackground,
+  Dimensions,
+  Platform,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
+
+import {
+  Container,
+  Header,
+  Title,
+  Left,
+  Right,
+  Body,
+  Text,
+  Icon,
+  Button,
+  Input,
+  Item,
+  Content,
+} from 'native-base';
+
+import styles from '../styles/styles';
+import {header} from '../Component/header';
+import {button, buttonOnPress} from '../Component/button';
+import {logoveYazi} from '../Component/logoveYazi';
+
+import {connect} from 'react-redux';
+
+const logo = require('../assets/logo.png');
+const screenBg = require('../assets/griarkaplan.png');
+const epostabutonu = require('../assets/epostabutonu.png');
+const button1 = require('../assets/button_001.png');
+const carpi = require('../assets/carpi.png');
+const facebook = require('../assets/facebookbuton.png');
+const geri = require('../assets/ok.png');
+const kirmiziButton = require('../assets/kbuton.png');
+
+const mapStateProps = state => {
+  return {
+    durum: state.durum,
+  };
+};
+const mapDispatchToProps = (dispatch, txt) => {
+  return {
+    degistir: () => dispatch({type: 'setDurum', payload: 'Ahmet'}),
+  };
+};
+export default class KayitEkranAsamaBir extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: false,
+      myTextContentType: true,
+      mailAdresi: '',
+    };
+  }
+  onButton = () => {
+    this.props.degistir(this.state.mailAdresi);
+    this.props.navigation.push('KayitEkranAsamaIki', {
+      email: this.state.mapDispatchToProps,
+    });
+  };
+  render() {
+    return (
+      <Container style={{backgroundColor: 'transparent'}}>
+        <ImageBackground source={screenBg} style={styles.imageContainer}>
+          <Content>{header('', 'KayitAnaEkran', this.props)}</Content>
+          <View style={{flex: 0.3}} />
+          <View>
+            <View>
+              <Item regular style={styles.Item}>
+                <Input
+                  style={{color: 'black', marginLeft: 10}}
+                  placeholder="E-Posta"
+                  keyboardType="email-address"
+                  placeholderTextColor="#808080"
+                  onChangeText={value => this.setState({mailAdresi: value})}
+                  value={this.state.mailAdresi}
+                  underlineColorAndroid="transparent"
+                />
+                <TouchableOpacity
+                  onPress={() =>
+                    this.state.myTextContentType === true
+                      ? this.setState({myTextContentType: false})
+                      : this.setState({myTextContentType: true})
+                  }>
+                  <Image
+                    style={{width: 15, height: 15, marginRight: 20}}
+                    source={carpi}
+                  />
+                </TouchableOpacity>
+              </Item>
+            </View>
+
+            <View style={{marginTop: 0}}>
+              <TouchableOpacity
+                onPress={() => {
+                 // alert('mail: '+ this.state.mailAdresi)
+                  this.props.navigation.push('KayitEkranAsamaIki', {
+                    userMail: this.state.mailAdresi,
+                  });
+                }}>
+                <View>
+                  <Image
+                    source={kirmiziButton}
+                    style={{
+                      width: '90%',
+                      alignSelf: 'center',
+                      resizeMode: 'contain',
+                    }}
+                  />
+                  <Text
+                    style={{
+                      color: 'white',
+                      marginTop: -85,
+                      fontSize: 16,
+                      fontWeight: 'bold',
+                      alignSelf: 'center',
+                    }}>
+                    {'SIGN IN'}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View
+            style={{
+              flex: 2,
+              backgroundColor: 'transparent',
+              alignContent: 'flex-start',
+            }}
+          />
+          <View
+            style={{
+              flex: 0.7,
+              backgroundColor: 'transparent',
+              alignContent: 'flex-start',
+            }}>
+            {logoveYazi(
+              'Already have an account? ',
+              '',
+              this.props,
+              logo,
+              'SIGN IN',
+            )}
+          </View>
+        </ImageBackground>
+      </Container>
+    );
+  }
+}
+//export default connect(mapStateProps, mapDispatchToProps)(KayitEkranAsamaBir);

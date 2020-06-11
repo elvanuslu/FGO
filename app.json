@@ -1,0 +1,7 @@
+{
+  "name": "Fogo",
+  "displayName": "Fogo",
+  "assetBundlePatterns": [
+    "assets/**/*"
+  ]
+}

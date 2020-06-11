@@ -1,0 +1,116 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable no-unused-vars */
+import React, {Component} from 'react';
+
+import {
+  SafeAreaView,
+  View,
+  StatusBar,
+  Image,
+  ImageBackground,
+  Dimensions,
+  Platform,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
+
+import {
+  Container,
+  Header,
+  Title,
+  Left,
+  Right,
+  Body,
+  Text,
+  Icon,
+  Button,
+  Input,
+  Item,
+  Content,
+} from 'native-base';
+
+import styles from '../styles/styles';
+import {header} from '../Component/header';
+import {button} from '../Component/button';
+import {logoveYazi} from '../Component/logoveYazi';
+
+const logo = require('../assets/logo.png');
+const screenBg = require('../assets/griarkaplan.png');
+const epostabutonu = require('../assets/pButton.png');
+const button1 = require('../assets/epostabutonu.png');
+const google = require('../assets/gButon.png');
+const facebook = require('../assets/fButton.png');
+const geri = require('../assets/ok.png');
+
+export default class KayitAnaEkran extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: false,
+      myTextContentType: true,
+    };
+  }
+  render() {
+    StatusBar.setBarStyle('light-content', true);
+    if (Platform.OS === 'android') {
+      StatusBar.setBackgroundColor('transparent', true);
+      StatusBar.setTranslucent(true);
+    }
+    return (
+      <Container style={{backgroundColor: 'transparent'}}>
+        <ImageBackground source={screenBg} style={styles.imageContainer}>
+          <Content>{header('', 'landing', this.props)}</Content>
+          <View style={{flex: 1}}>
+            {button(
+              'E-POSTA İLE KAYIT',
+              'KayitEkranAsamaBir',
+              this.props,
+              epostabutonu,
+              'white',
+            )}
+          </View>
+
+          <View
+            style={{
+              flex: 3,
+              backgroundColor: 'transparent',
+              flexDirection: 'column',
+            }}>
+            <View style={{marginBottom: 0}}>
+              {button(
+                'FACEBOOK İLE BAĞLAN',
+                'landing',
+                this.props,
+                facebook,
+                'white',
+              )}
+            </View>
+            <View>
+              {button(
+                'GOOGLE İLE BAĞLAN',
+                'landing',
+                this.props,
+                google,
+                '#518ef8',
+              )}
+            </View>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: 'transparent',
+              alignContent: 'flex-start',
+            }}>
+            {logoveYazi(
+              'Already have an account? ',
+              '',
+              this.props,
+              logo,
+              'SIGN IN',
+            )}
+          </View>
+        </ImageBackground>
+      </Container>
+    );
+  }
+}

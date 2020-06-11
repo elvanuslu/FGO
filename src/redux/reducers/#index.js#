@@ -1,0 +1,15 @@
+import {combineReducers} from 'redux';
+import userReducers from './userReducers';
+import kullaniciKayit from './kullaniciKayit';
+import profileReducers from './profileReducers';
+import SockReducer from './SockReducer';
+import matchReducer from './matchReducer';
+
+const reducersCombined = combineReducers({
+  userReducers,
+  kullaniciKayit,
+  profileReducers,
+  SockReducer,
+  matchReducer,
+});
+export default reducersCombined;

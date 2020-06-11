@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "599660645349",
+    "firebase_url": "https://fogo-3892d.firebaseio.com",
+    "project_id": "fogo-3892d",
+    "storage_bucket": "fogo-3892d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:599660645349:android:0dc0f25c89a2eeaf0ebd0c",
+        "android_client_info": {
+          "package_name": "com.kuanto.fogo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "599660645349-0g422bvmc3cctt52rtfasjhu8a1lb9vo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5S-7TgqU5ahtpSJHAj5s5iROxHqqJJlo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "599660645349-0g422bvmc3cctt52rtfasjhu8a1lb9vo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

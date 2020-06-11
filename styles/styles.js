@@ -1,0 +1,326 @@
+const React = require('react-native');
+
+const {StyleSheet} = React;
+
+const {Dimensions, Platform} = React;
+const deviceHeight = Dimensions.get('window').height;
+
+export default {
+  backgroundVideo: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  },
+  gridView: {
+    marginTop: 20,
+    flex: 1,
+  },
+  itemContainer: {
+    //justifyContent: 'flex-end',
+    borderRadius: 5,
+    padding: 1,
+    height: 110,
+  },
+  itemName: {
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: '600',
+  },
+  itemCode: {
+    fontWeight: '600',
+    fontSize: 12,
+    color: '#fff',
+  },
+  FlatListContainer: {
+    flex: 1,
+  },
+  item: {
+    backgroundColor: '#4D243D',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+    margin: 1,
+    height: Dimensions.get('window').width / 2, // approximate a square
+  },
+  itemInvisible: {
+    backgroundColor: 'transparent',
+  },
+  itemText: {
+    color: '#ababab',
+  },
+  container: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+  Ust: {
+    flex: 1,
+    backgroundColor: 'green',
+  },
+  Orta: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+  Alt: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+  LogoContainer: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  container1: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignContent: 'space-around',
+    marginVertical: 5,
+  },
+  containerFlex1Center: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  Center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonIco: {
+    marginTop: 10,
+    marginLeft: 25,
+    marginRight: 25,
+    width: 30,
+    height: 30,
+    resizeMode: 'contain',
+  },
+  InputText: {
+    marginTop: 10,
+    marginLeft: 15,
+    marginRight: 15,
+    borderWidth: 1,
+    borderColor: 'black',
+    borderLeftWidth: 1,
+    borderTopWidth: 1,
+    borderRightWidth: 1,
+    borderRadius: 5,
+  },
+  Logo: {
+    marginTop: 5,
+    width: '100%',
+    height: 60,
+    resizeMode: 'contain',
+    marginBottom: -15,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  LogoKucuk: {
+    width: '20%',
+    resizeMode: 'contain',
+    marginBottom: -30,
+    alignSelf: 'center',
+  },
+  OrtaGorsel: {
+    width: '60%',
+    resizeMode: 'contain',
+    alignSelf: 'center',
+  },
+  imgadam: {
+    width: 50,
+    resizeMode: 'contain',
+    marginLeft: 50,
+  },
+  Item: {
+    marginLeft: 30,
+    marginRight: 30,
+    borderRadius: 20,
+    backgroundColor: 'white',
+    marginVertical: 10,
+  },
+  imageContainer: {
+    flex: 1,
+    resizeMode: 'contain',
+    justifyContent: 'center',
+    //alignContent: 'center',
+  },
+  absoluteView: {
+    marginTop: -40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+  },
+  SfiremiUnuttum: {
+    marginTop: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
+  },
+  textString: {
+    fontSize: 12,
+    color: 'gray',
+    fontWeight: 'normal',
+  },
+  red: {
+    fontSize: 14,
+    color: 'red',
+    fontWeight: 'normal',
+  },
+  listItem: {
+    height: 75,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  leftSwipeItem: {
+    flex: 1,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    paddingRight: 20,
+  },
+  rightSwipeItem: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingLeft: 20,
+  },
+  standalone: {
+    marginTop: 30,
+    marginBottom: 30,
+  },
+  standaloneRowFront: {
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    height: 50,
+  },
+  standaloneRowBack: {
+    alignItems: 'center',
+    backgroundColor: '#8BC645',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 15,
+  },
+  backTextWhite: {
+    color: '#FFF',
+  },
+  rowFront: {
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderBottomColor: 'black',
+    borderBottomWidth: 0.2,
+    justifyContent: 'center',
+    height: 50,
+  },
+  rowBack: {
+    alignItems: 'center',
+    backgroundColor: '#DDD',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingLeft: 25,
+  },
+  backRightBtn: {
+    alignItems: 'center',
+    bottom: 0,
+    justifyContent: 'center',
+    position: 'absolute',
+    top: 0,
+    width: 75,
+  },
+  backRightBtnLeft: {
+    backgroundColor: 'blue',
+    right: 75,
+  },
+  backRightBtnRight: {
+    backgroundColor: 'red',
+    right: 0,
+  },
+  controls: {
+    alignItems: 'center',
+    marginBottom: 30,
+  },
+  switchContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 5,
+  },
+  switch: {
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'black',
+    paddingVertical: 10,
+    width: Dimensions.get('window').width / 4,
+  },
+  trash: {
+    height: 25,
+    width: 25,
+  },
+  Inputs: {
+    marginLeft: 20,
+    marginRight: 10,
+    borderRadius: 5,
+    marginBottom: 0,
+    height: 40,
+    width: '90%',
+    borderTopWidth: 0,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
+    borderWidth: 0,
+    //color:'black',
+    borderColor: 'transparent',
+  },
+  header: {
+    marginLeft: -5,
+    marginTop: 5,
+    marginBottom: Platform.OS === 'ios' ? -7 : 0,
+    lineHeight: 24,
+    color: '#5357b6',
+  },
+  modalImage: {
+    resizeMode: 'contain',
+    height: 200,
+  },
+  bold: {
+    fontWeight: '600',
+  },
+  negativeMargin: {
+    marginBottom: -10,
+  },
+  modalContent: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 0,
+  },
+  imageMargin: {
+    resizeMode: 'contain',
+    height: 32,
+    marginLeft: -100,
+    marginBottom: 5,
+    marginRight: -100,
+  },
+  soruboxView: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    paddingHorizontal: 8,
+    zIndex: 0,
+    elevate: -999,
+    //backgroundColor: 'yellow',
+    //flex: 1,
+  },
+  containerAcs: {
+    height: 44,
+    width: '100%',
+    backgroundColor: 'white',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: 'rgba(0,0,0,0.3)',
+  },
+};
